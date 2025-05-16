@@ -5,19 +5,20 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import LogoMarquee from "./components/LogoMarquue";
-import GuardingFuture from "./components/GuardingFuture";
-import Services from "./components/Services";
-import WhyCybersecurity from "./components/WhyCyberSecurity";
-import Stats from "./components/Stats";
-import InfoSection from "./components/InfoSection";
-import HackerCommunity from "./components/HackerCommunity";
-import Testimonials from "./components/Testimonials";
-import Faq from "./components/Faq";
-import Footer from "./components/Footer";
-import NewsSection from "./components/NewsSection";
+import Navbar from "../components/Layout/Navbar";
+import Hero from "../components/HomeComponents/Hero";
+import LogoMarquee from "../components/HomeComponents/LogoMarquue";
+import GuardingFuture from "../components/HomeComponents/GuardingFuture";
+import Services from "../components/HomeComponents/Services";
+import WhyCybersecurity from "../components/HomeComponents/WhyCyberSecurity";
+import Stats from "../components/HomeComponents/Stats";
+import InfoSection from "../components/HomeComponents/InfoSection";
+import HackerCommunity from "../components/HomeComponents/HackerCommunity";
+import Testimonials from "../components/HomeComponents/Testimonials";
+import Faq from "../components/HomeComponents/Faq";
+import Footer from "../components/Layout/Footer";
+import NewsSection from "../components/HomeComponents/NewsSection";
+
 
 export default function Home() {
   const mainRef = useRef(null);
@@ -74,7 +75,7 @@ export default function Home() {
 
   return (
     <main ref={mainRef} className="overflow-hidden">
-      <Navbar />
+     
       <Hero />
       <LogoMarquee />
       <GuardingFuture />
@@ -86,7 +87,7 @@ export default function Home() {
       <Testimonials />
       <Faq />
       <NewsSection />
-      <Footer />
+      
     </main>
   );
 }

@@ -63,7 +63,7 @@ export default function Navbar() {
             RESEARCHERS
           </Link>
           <Link
-            href="#"
+            href="/program"
             className="text-white hover:text-cyan-400 transition-colors"
           >
             PROGRAMS
@@ -89,7 +89,7 @@ export default function Navbar() {
         </div>
 
         <Link
-          href="#"
+          href="/login"
           className="bg-cyan-500 text-white px-6 py-2 rounded hover:bg-cyan-600 transition-colors"
         >
           LOGIN
