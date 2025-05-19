@@ -118,7 +118,7 @@ export default function SignupForm({ userType }) {
       <div className="flex items-center">
         <input
           id="agree-terms"
-          type="checkbox"
+          type="checkbox" 
           checked={agreeTerms}
           onChange={(e) => setAgreeTerms(e.target.checked)}
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-[#1a1a1a]"
