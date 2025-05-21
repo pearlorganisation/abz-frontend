@@ -51,7 +51,7 @@ export default function Navbar() {
             PENTEST COPILOT
           </Link>
           <Link
-            href="#"
+            href="/integrations"
             className="text-white hover:text-cyan-400 transition-colors"
           >
             FOR COMPANIES
