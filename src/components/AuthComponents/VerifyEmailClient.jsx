@@ -13,9 +13,12 @@ export default function VerifyEmailPage() {
 
     if (token) {
       // Verify token with backend
-      fetch(`${NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/verify-signup/${token}`, {
-        method: "GET",
-      })
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/verify-signup/${token}`,
+        {
+          method: "GET",
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
