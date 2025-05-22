@@ -1,17 +1,40 @@
-// components/IntegrationCardsSection.js
 "use client";
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const IntegrationCardsSection = () => {
   const cardRefs = useRef([]);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: "vertical",
+      gestureDirection: "vertical",
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      ScrollTrigger.update();
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Animate each card with GSAP + ScrollTrigger
     cardRefs.current.forEach((el, index) => {
       const direction = index % 2 === 0 ? -100 : 100;
       gsap.fromTo(
@@ -31,7 +54,10 @@ const IntegrationCardsSection = () => {
       );
     });
 
-    return () => ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    return () => {
+      lenis.destroy();
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, []);
 
   const integrations = [
@@ -73,7 +99,7 @@ const IntegrationCardsSection = () => {
   ];
 
   return (
-    <section className="w-full py-20 bg-white">
+    <section ref={sectionRef} className="w-full py-20 bg-white">
       <h2 className="text-center text-2xl md:text-3xl font-semibold text-gray-800 mb-2">
         Since We Made It Simple
       </h2>
@@ -90,23 +116,19 @@ const IntegrationCardsSection = () => {
               item.layout === "right" ? "md:flex-row-reverse" : ""
             } gap-6 md:gap-10 bg-white`}
           >
-            {/* Icon */}
             <div className="flex-shrink-0 w-[80px] h-[80px] shadow-lg rounded-xl flex items-center justify-center bg-white p-2">
-              <Image
-                src={item.icon}
-                alt={item.title}
-                width={60}
-                height={60}
-              />
+              <Image src={item.icon} alt={item.title} width={60} height={60} />
             </div>
 
-            {/* Text */}
             <div className="flex-1 bg-white shadow-md rounded-xl p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 {item.title}
               </h3>
               <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-              <a href="#" className="text-green-600 font-medium hover:underline">
+              <a
+                href="#"
+                className="text-green-600 font-medium hover:underline"
+              >
                 Learn more
               </a>
             </div>

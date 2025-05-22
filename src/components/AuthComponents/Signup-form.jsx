@@ -1,130 +1,215 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+
+const InputField = ({
+  id,
+  label,
+  type = "text",
+  value,
+  onChange,
+  required = false,
+  optional = false,
+}) => (
+  <div>
+    <label htmlFor={id} className="block text-sm font-medium mb-2">
+      {label} {optional && <span className="text-gray-500">(optional)</span>}
+    </label>
+    <input
+      id={id}
+      type={type}
+      value={value}
+      onChange={onChange}
+      className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      required={required}
+    />
+  </div>
+);
 
 export default function SignupForm({ userType }) {
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [agreeTerms, setAgreeTerms] = useState(false)
-  const router = useRouter()
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    agreeTerms: false,
+    company_name: "", // for company users
+  });
+
+  const handleChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      phone,
+      password,
+      confirmPassword,
+      agreeTerms,
+      company_name,
+    } = formData;
 
     if (password !== confirmPassword) {
-      alert("Passwords don't match")
-      return
+      alert("Passwords don't match");
+      return;
     }
 
-    // Here you would typically handle registration
-    console.log({ firstName, lastName, email, password, agreeTerms, userType })
-    // For demo purposes, we'll just log the values
-    // router.push(`/login/${userType}`)
-  }
+    if (!agreeTerms) {
+      alert("Please agree to the terms and conditions.");
+      return;
+    }
+
+    // Submit logic here, including userType as role
+    // console.log({
+    //   firstName,
+    //   lastName,
+    //   email,
+    //   phone,
+    //   password,
+    //   agreeTerms,
+    //   role: userType,
+    //   ...(userType === "company" && { company_name }),
+    // });
+    try {
+      const dataToSend = {
+        first_name: firstName,
+        last_name: lastName,
+        // user_name: `${firstName.toLowerCase()}_${lastName.toLowerCase()}`, // backend expects this field
+        user_name: username, // backend expects this field
+        email,
+        phone_number: phone,
+        password,
+        confirm_password: confirmPassword,
+        role: userType.toUpperCase(),
+        company_name: userType === "company" ? company_name : undefined,
+      };
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/register`,
+        dataToSend
+      );
+
+      const responseData = response.data?.data;
+
+      dispatch(login(responseData));
+
+      alert(
+        response.data.message || "Signup successful! Please verify your email."
+      );
+      router.push("/login");
+    } catch (error) {
+      alert(
+        error?.response?.data?.message ||
+          "An error occurred during signup. Please try again."
+      );
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="first-name" className="block text-sm font-medium mb-2">
-            First Name
-          </label>
-          <input
-            id="first-name"
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="last-name" className="block text-sm font-medium mb-2">
-            Last Name
-          </label>
-          <input
-            id="last-name"
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-2">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <InputField
+          id="firstName"
+          label="First Name"
+          value={formData.firstName}
+          onChange={handleChange}
           required
         />
-      </div>
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-2">
-          Phone No. <span className="text-gray-500">(optional)</span>
-        </label>
-        <input
-          id="phone"
-          type="phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          
-        />
-      </div>
-
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium mb-2">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <InputField
+          id="lastName"
+          label="Last Name"
+          value={formData.lastName}
+          onChange={handleChange}
           required
         />
       </div>
 
-      <div>
-        <label htmlFor="confirm-password" className="block text-sm font-medium mb-2">
-          Confirm Password
-        </label>
-        <input
-          id="confirm-password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      <InputField
+        id="username"
+        label="Username"
+        value={formData.username}
+        onChange={handleChange}
+        required
+      />
+
+      <InputField
+        id="email"
+        type="email"
+        label="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
+
+      <InputField
+        id="phone"
+        type="tel"
+        label="Phone No."
+        value={formData.phone}
+        onChange={handleChange}
+        optional
+      />
+
+      {userType === "company" && (
+        <InputField
+          id="company_name"
+          label="Company Name"
+          value={formData.company_name}
+          onChange={handleChange}
           required
         />
-      </div>
+      )}
+
+      <InputField
+        id="password"
+        type="password"
+        label="Password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
+
+      <InputField
+        id="confirmPassword"
+        type="password"
+        label="Confirm Password"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        required
+      />
+
+      {/* Hidden input for role */}
+      <input type="hidden" id="role" value={userType} />
 
       <div className="flex items-center">
         <input
-          id="agree-terms"
-          type="checkbox" 
-          checked={agreeTerms}
-          onChange={(e) => setAgreeTerms(e.target.checked)}
+          id="agreeTerms"
+          type="checkbox"
+          checked={formData.agreeTerms}
+          onChange={handleChange}
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-[#1a1a1a]"
           required
         />
-        <label htmlFor="agree-terms" className="ml-2 block text-sm">
+        <label htmlFor="agreeTerms" className="ml-2 text-sm">
           I agree to the{" "}
           <Link href="/terms" className="text-blue-400 hover:underline">
             Terms and Conditions
@@ -143,5 +228,5 @@ export default function SignupForm({ userType }) {
         Create Account
       </button>
     </form>
-  )
+  );
 }
