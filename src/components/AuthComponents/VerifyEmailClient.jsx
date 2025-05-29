@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { instance } from "@/services/Axios/axiosInterceptor";
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
@@ -13,12 +14,8 @@ export default function VerifyEmailPage() {
 
     if (token) {
       // Verify token with backend
-      fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/verify-signup/${token}`,
-        {
-          method: "GET",
-        }
-      )
+      instance
+        .get(`/auth/verify-signup/${token}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {

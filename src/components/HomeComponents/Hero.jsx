@@ -7,23 +7,23 @@ import { gsap } from "gsap";
 export default function Hero() {
   const heroRef = useRef(null);
 
-  useEffect(() => {
-    // const ctx = gsap.context(() => {
-    //   gsap.from(".hero-text > *", {
-    //     y: 50,
-    //     opacity: 0,
-    //     stagger: 0.2,
-    //     duration: 1,
-    //     ease: "power3.out",
-    //   });
-    // }, heroRef);
-    // return () => ctx.revert();
-  }, []);
+  // useEffect(() => {
+  //   // const ctx = gsap.context(() => {
+  //   //   gsap.from(".hero-text > *", {
+  //   //     y: 50,
+  //   //     opacity: 0,
+  //   //     stagger: 0.2,
+  //   //     duration: 1,
+  //   //     ease: "power3.out",
+  //   //   });
+  //   // }, heroRef);
+  //   // return () => ctx.revert();
+  // }, []);
 
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen  flex items-center justify-center  text-white overflow-hidden"
+      className="relative min-h-screen   flex items-center justify-center  text-white overflow-hidden"
       style={{
         backgroundImage: "url(/hero-bg.jpg)",
         backgroundSize: "cover",
@@ -31,6 +31,12 @@ export default function Hero() {
         backgroundPosition: "center",
       }}
     >
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          background: `radial-gradient(circle at center, rgba(0, 0, 0, 0) 0%, rgba(10, 14, 25, 0.7) 40%, rgba(10, 14, 25, 0.95) 100%)`,
+        }}
+      ></div>
       <div className="absolute inset-0 bg-navy-950 opacity-80"></div>
 
       <div className="container mx-auto px-4 z-10 py-20 mt-16">

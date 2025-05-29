@@ -1,76 +1,76 @@
-'use client';
-import React, { useState, useMemo } from 'react';
-import ProgramCard from '@/components/HomeComponents/ProgramCard';
+"use client";
+import React, { useState, useMemo } from "react";
+import ProgramCard from "@/components/HomeComponents/ProgramCard";
 
 const programs = [
   {
-    title: 'Hike',
-    subtitle: 'hike.bugbounty',
-    type: 'Bug Bounty',
-    status: ['Managed'],
-    bgColor: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
+    title: "Hike",
+    subtitle: "hike.bugbounty",
+    type: "Bug Bounty",
+    status: ["Managed"],
+    bgColor: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
   },
   {
-    title: 'BugBase',
-    subtitle: 'bugbase',
-    type: 'Bug Bounty',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #1a1a2e, #16213e)',
+    title: "CyberNeoGen",
+    subtitle: "CyberNeoGen",
+    type: "Bug Bounty",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #1a1a2e, #16213e)",
   },
   {
-    title: 'PhonePe VDP',
-    subtitle: 'phonepe.vdp',
-    type: 'Vulnerability Disclosure',
-    status: ['Managed'],
-    bgColor: 'linear-gradient(135deg, #232526, #414345)',
+    title: "PhonePe VDP",
+    subtitle: "phonepe.vdp",
+    type: "Vulnerability Disclosure",
+    status: ["Managed"],
+    bgColor: "linear-gradient(135deg, #232526, #414345)",
   },
   {
-    title: 'Groww BugBounty',
-    subtitle: 'groww',
-    type: 'Bug Bounty',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+    title: "Groww BugBounty",
+    subtitle: "groww",
+    type: "Bug Bounty",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
   },
   {
-    title: 'Airmeet',
-    subtitle: 'airmeet',
-    type: 'Vulnerability Disclosure',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #2c3e50, #4ca1af)',
+    title: "Airmeet",
+    subtitle: "airmeet",
+    type: "Vulnerability Disclosure",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #2c3e50, #4ca1af)",
   },
   {
-    title: 'Flipkart',
-    subtitle: 'flipkart',
-    type: 'Vulnerability Disclosure',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #373B44, #4286f4)',
+    title: "Flipkart",
+    subtitle: "flipkart",
+    type: "Vulnerability Disclosure",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #373B44, #4286f4)",
   },
   {
-    title: 'Groww BugBounty',
-    subtitle: 'groww',
-    type: 'Bug Bounty',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+    title: "Groww BugBounty",
+    subtitle: "groww",
+    type: "Bug Bounty",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
   },
   {
-    title: 'Airmeet',
-    subtitle: 'airmeet',
-    type: 'Vulnerability Disclosure',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #2c3e50, #4ca1af)',
+    title: "Airmeet",
+    subtitle: "airmeet",
+    type: "Vulnerability Disclosure",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #2c3e50, #4ca1af)",
   },
   {
-    title: 'Flipkart',
-    subtitle: 'flipkart',
-    type: 'Vulnerability Disclosure',
-    status: ['Self-Managed'],
-    bgColor: 'linear-gradient(135deg, #373B44, #4286f4)',
+    title: "Flipkart",
+    subtitle: "flipkart",
+    type: "Vulnerability Disclosure",
+    status: ["Self-Managed"],
+    bgColor: "linear-gradient(135deg, #373B44, #4286f4)",
   },
 ];
 
 const ProgramPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('title');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("title");
 
   const filteredPrograms = useMemo(() => {
     return programs
@@ -78,8 +78,8 @@ const ProgramPage = () => {
         program.title.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .sort((a, b) => {
-        if (sortBy === 'title') return a.title.localeCompare(b.title);
-        if (sortBy === 'type') return a.type.localeCompare(b.type);
+        if (sortBy === "title") return a.title.localeCompare(b.title);
+        if (sortBy === "type") return a.type.localeCompare(b.type);
         return 0;
       });
   }, [searchQuery, sortBy]);
@@ -87,9 +87,12 @@ const ProgramPage = () => {
   return (
     <div className="min-h-screen mt-20 bg-gradient-to-b from-gray-900 to-black py-12 px-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-white text-center mb-4">Programs Directory</h1>
+        <h1 className="text-4xl font-bold text-white text-center mb-4">
+          Programs Directory
+        </h1>
         <p className="text-gray-400 text-center mb-10">
-          Discover opportunities in live programs and contribute your skills to security initiatives.
+          Discover opportunities in live programs and contribute your skills to
+          security initiatives.
         </p>
 
         {/* Search and Sort */}

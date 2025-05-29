@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { instance } from "@/services/Axios/axiosInterceptor";
 
 const InputField = ({
   id,
@@ -103,20 +104,15 @@ export default function SignupForm({ userType }) {
         company_name: userType === "company" ? company_name : undefined,
       };
 
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/register`,
-        dataToSend
-      );
+      const response = await instance.post(`/auth/register`, dataToSend);
+      // alert(JSON.stringify(response));
 
-      const responseData = response.data?.data;
+      const responseData = response?.data?.message;
 
-      dispatch(login(responseData));
-
-      alert(
-        response.data.message || "Signup successful! Please verify your email."
-      );
-      router.push("/login");
+      alert(responseData ?? "Signup successful! Please verify your email.");
+      // router.push("/login");
     } catch (error) {
+      console.error("Signup error:", error);
       alert(
         error?.response?.data?.message ||
           "An error occurred during signup. Please try again."
