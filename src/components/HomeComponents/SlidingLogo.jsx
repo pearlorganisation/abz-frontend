@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { instance } from "@/services/Axios/axiosInterceptor";
 
 export default function SlidingLogo() {
+  let [logos,setLogos] = useState([])
   const marqueeRef = useRef(null);
 
   useEffect(() => {
@@ -24,43 +26,17 @@ export default function SlidingLogo() {
     return () => ctx.revert();
   }, []);
 
-  const logos = [
-    {
-      id: 1,
-      src: "/logo1.png",
-      alt: "Client Logo 1",
-    },
-    {
-      id: 2,
-      src: "/logo2.jpg",
-      alt: "Client Logo 2",
-    },
-    {
-      id: 3,
-      src: "/logo3.jpg",
-      alt: "Client Logo 3",
-    },
-    {
-      id: 4,
-      src: "/logo4.png",
-      alt: "Client Logo 4",
-    },
-    {
-      id: 5,
-      src: "/logo5.jpg",
-      alt: "Client Logo 5",
-    },
-    {
-      id: 6,
-      src: "/logo6.jpg",
-      alt: "Client Logo 6",
-    },
-    {
-      id: 7,
-      src: "/logo7.png",
-      alt: "Client Logo 7",
-    },
-  ];
+  async function getPartnerLogo(){
+    let partners = await instance.get("/partners")
+    let data = partners.data.data
+    setLogos(data)
+  }
+
+  useEffect(()=>{
+     getPartnerLogo()
+  },[])
+
+
 
   return (
     <section
@@ -70,10 +46,10 @@ export default function SlidingLogo() {
       <Marquee gradient={false} speed={40} pauseOnHover={true} className="py-4">
         <div className="flex items-center gap-16 mx-8">
           {logos.map((logo) => (
-            <div key={logo.id} className="relative h-16 w-32">
+            <div key={logo._id} className="relative h-16 w-32">
               <Image
-                src={logo.src || "/placeholder.svg"}
-                alt={logo.alt}
+                src={logo.image.secure_url || "/placeholder.svg"}
+                alt={logo.name}
                 fill
                 className="object-contain"
               />
