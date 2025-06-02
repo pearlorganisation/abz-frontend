@@ -1,24 +1,44 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { instance } from "@/services/Axios/axiosInterceptor";
 
 export default function LoginForm({ userType }) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const router = useRouter();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await instance.post("/auth/login", {
+        email,
+        password,
+        identifier_type: "EMAIL",
+      });
+      console.log(res);
+      if (res.data.success) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setErrorMsg(err?.response?.data?.message || "Login failed");
+    }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     // Here you would typically handle authentication
-    console.log({ email, password, rememberMe, userType })
+    console.log({ email, password, rememberMe, userType });
     // For demo purposes, we'll just log the values
     // router.push(`/${userType}/dashboard`)
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleLogin} className="space-y-4">
       <div>
         <label htmlFor="email" className="block text-sm font-medium mb-2">
           Email
@@ -67,5 +87,5 @@ export default function LoginForm({ userType }) {
         Log in
       </button>
     </form>
-  )
+  );
 }
