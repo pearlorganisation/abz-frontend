@@ -1,5 +1,5 @@
 "use client";
-
+import { usePathname } from 'next/navigation';
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +10,10 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState("");
 
+
+  const pathname = usePathname();
+  const isCompanyRoute = pathname.startsWith("/company");
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -18,6 +22,11 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if(isCompanyRoute){
+    return (
+      <></>
+    )
+  }
   return (
     <motion.nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
