@@ -1,72 +1,190 @@
+// "use client";
+
+// import { useReducer, useCallback } from "react";
+// import { useRouter } from "next/navigation";
+// import { instance } from "@/services/Axios/axiosInterceptor";
+
+// const initialState = {
+//   identifier: "",
+//   password: "",
+//   rememberMe: false,
+//   identifierType: "EMAIL", // or "USERNAME"
+//   loading: false,
+//   error: null,
+// };
+
+// function reducer(state, action) {
+//   return { ...state, ...action };
+// }
+
+// export default function LoginForm({ userType }) {
+//   const [state, dispatch] = useReducer(reducer, initialState);
+//   const router = useRouter();
+
+//   const handleChange = useCallback((e) => {
+//     const { name, value, type, checked } = e.target;
+//     dispatch({ [name]: type === "checkbox" ? checked : value });
+//   }, []);
+
+//   const handleSubmit = useCallback(
+//     async (e) => {
+//       e.preventDefault();
+//       const { identifier, password, identifierType, rememberMe } = state;
+
+//       if (!identifier || !password) {
+//         dispatch({ error: "All fields are required." });
+//         return;
+//       }
+
+//       dispatch({ loading: true, error: null });
+
+//       const dataToSend = {
+//         password,
+//         identifier_type: identifierType,
+//         ...(identifierType === "EMAIL"
+//           ? { email: identifier }
+//           : { user_name: identifier }),
+//       };
+
+//       try {
+//         const res = await instance.post("/auth/login", dataToSend, {
+//           withCredentials: true,
+//         });
+
+//         if (res.data.success) {
+//           router.push(`/${userType}/dashboard`);
+//         }
+//       } catch (err) {
+//         const msg =
+//           err?.response?.data?.message || "Login failed. Please try again.";
+//         dispatch({ error: msg });
+//       } finally {
+//         dispatch({ loading: false });
+//       }
+//     },
+//     [state, router, userType]
+//   );
+
+//   return (
+//     <form onSubmit={handleSubmit} className="space-y-4">
+//       <div>
+//         <label className="block text-sm font-medium mb-1">Login With</label>
+//         <select
+//           name="identifierType"
+//           value={state.identifierType}
+//           onChange={handleChange}
+//           className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md text-white"
+//         >
+//           <option value="EMAIL">Email</option>
+//           <option value="USERNAME">Username</option>
+//         </select>
+//       </div>
+
+//       <div>
+//         <label htmlFor="identifier" className="block text-sm font-medium mb-2">
+//           {state.identifierType === "EMAIL" ? "Email" : "Username"}
+//         </label>
+//         <input
+//           id="identifier"
+//           name="identifier"
+//           type={state.identifierType === "EMAIL" ? "email" : "text"}
+//           value={state.identifier}
+//           onChange={handleChange}
+//           className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           required
+//         />
+//       </div>
+
+//       <div>
+//         <label htmlFor="password" className="block text-sm font-medium mb-2">
+//           Password
+//         </label>
+//         <input
+//           id="password"
+//           name="password"
+//           type="password"
+//           value={state.password}
+//           onChange={handleChange}
+//           className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           required
+//         />
+//       </div>
+
+//       <div className="flex items-center">
+//         <input
+//           id="rememberMe"
+//           name="rememberMe"
+//           type="checkbox"
+//           checked={state.rememberMe}
+//           onChange={handleChange}
+//           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-[#1a1a1a]"
+//         />
+//         <label htmlFor="rememberMe" className="ml-2 block text-sm">
+//           Remember me
+//         </label>
+//       </div>
+
+//       {state.error && <p className="text-sm text-red-500">{state.error}</p>}
+
+//       <button
+//         type="submit"
+//         disabled={state.loading}
+//         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+//       >
+//         {state.loading ? "Logging in..." : "Log in"}
+//       </button>
+//     </form>
+//   );
+// }
+
 "use client";
 
-import { useReducer, useCallback } from "react"
-import { useRouter } from "next/navigation"
-import { instance } from "@/services/Axios/axiosInterceptor"
-
-const initialState = {
-  identifier: "",
-  password: "",
-  rememberMe: false,
-  identifierType: "EMAIL", // or "USERNAME"
-  loading: false,
-  error: null,
-}
-
-function reducer(state, action) {
-  return { ...state, ...action }
-}
+import { useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { login } from "@/store/actions/Auth/authActions";
+// import { login } from "@/redux/actions/Auth/authActions"; // adjust path if needed
 
 export default function LoginForm({ userType }) {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const router = useRouter()
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    identifier: "",
+    password: "",
+    rememberMe: false,
+    identifierType: "EMAIL",
+  });
+
+  const { isLoginLoading, errorMessage } = useSelector((state) => state.auth);
 
   const handleChange = useCallback((e) => {
-    const { name, value, type, checked } = e.target
-    dispatch({ [name]: type === "checkbox" ? checked : value })
-  }, [])
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically handle authentication
-    console.log({ email, password, rememberMe, userType });
-    // For demo purposes, we'll just log the values
-    // router.push(`/${userType}/dashboard`)
-  };
-    e.preventDefault()
-    const { identifier, password, identifierType, rememberMe } = state
+    const { identifier, password, identifierType } = formData;
 
     if (!identifier || !password) {
-      dispatch({ error: "All fields are required." })
-      return
+      return alert("All fields are required.");
     }
 
-    dispatch({ loading: true, error: null })
+    const payload =
+      identifierType === "EMAIL"
+        ? { email: identifier, password, identifier_type: "EMAIL" }
+        : { user_name: identifier, password, identifier_type: "USERNAME" };
 
-    const dataToSend = {
-      password,
-      identifier_type: identifierType,
-      ...(identifierType === "EMAIL"
-        ? { email: identifier }
-        : { user_name: identifier }),
-    }
-
-    try {
-      const res = await instance.post("/auth/login", dataToSend, {
-        withCredentials: true,
-      })
-
-      if (res.data.success) {
-        router.push(`/${userType}/dashboard`)
-      }
-    } catch (err) {
-      const msg =
-        err?.response?.data?.message || "Login failed. Please try again."
-      dispatch({ error: msg })
-    } finally {
-      dispatch({ loading: false })
-    }
-  }
+    const result = await dispatch(login(payload));
+    console.log("User data:", result.payload?.user);
+    // if (login.fulfilled.match(result)) {
+    //   router.push(`/${userType}/dashboard`);
+    // }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,7 +192,7 @@ export default function LoginForm({ userType }) {
         <label className="block text-sm font-medium mb-1">Login With</label>
         <select
           name="identifierType"
-          value={state.identifierType}
+          value={formData.identifierType}
           onChange={handleChange}
           className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md text-white"
         >
@@ -85,13 +203,13 @@ export default function LoginForm({ userType }) {
 
       <div>
         <label htmlFor="identifier" className="block text-sm font-medium mb-2">
-          {state.identifierType === "EMAIL" ? "Email" : "Username"}
+          {formData.identifierType === "EMAIL" ? "Email" : "Username"}
         </label>
         <input
           id="identifier"
           name="identifier"
-          type={state.identifierType === "EMAIL" ? "email" : "text"}
-          value={state.identifier}
+          type={formData.identifierType === "EMAIL" ? "email" : "text"}
+          value={formData.identifier}
           onChange={handleChange}
           className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
@@ -106,7 +224,7 @@ export default function LoginForm({ userType }) {
           id="password"
           name="password"
           type="password"
-          value={state.password}
+          value={formData.password}
           onChange={handleChange}
           className="w-full p-3 bg-[#1a1a1a] border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
@@ -118,7 +236,7 @@ export default function LoginForm({ userType }) {
           id="rememberMe"
           name="rememberMe"
           type="checkbox"
-          checked={state.rememberMe}
+          checked={formData.rememberMe}
           onChange={handleChange}
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-[#1a1a1a]"
         />
@@ -127,16 +245,14 @@ export default function LoginForm({ userType }) {
         </label>
       </div>
 
-      {state.error && (
-        <p className="text-sm text-red-500">{state.error}</p>
-      )}
+      {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
 
       <button
         type="submit"
-        disabled={state.loading}
+        disabled={isLoginLoading}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {state.loading ? "Logging in..." : "Log in"}
+        {isLoginLoading ? "Logging in..." : "Log in"}
       </button>
     </form>
   );

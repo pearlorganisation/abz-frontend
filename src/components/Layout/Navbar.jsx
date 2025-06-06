@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,6 @@ import { FiChevronDown } from "react-icons/fi";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState("");
-
 
   const pathname = usePathname();
   const isCompanyRoute = pathname.startsWith("/company");
@@ -22,10 +21,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if(isCompanyRoute){
-    return (
-      <></>
-    )
+  if (isCompanyRoute) {
+    return <></>;
   }
   return (
     <motion.nav
@@ -120,7 +117,7 @@ export default function Navbar() {
                   Partner with Us
                 </Link>
                 <Link
-                  href="/enterprise"
+                  href="/startups"
                   className="block px-4 py-2 hover:bg-gray-100"
                 >
                   For StartUps
@@ -148,10 +145,10 @@ export default function Navbar() {
             {openDropdown === "researchers" && (
               <div className="absolute top-full left-0 mt-2 bg-white text-black rounded shadow-md min-w-[200px] z-40">
                 <Link
-                  href="/research"
+                  href="/apollo"
                   className="block px-4 py-2 hover:bg-gray-100"
                 >
-                  Apolio
+                  Apollo
                 </Link>
                 <Link
                   href="/submit"

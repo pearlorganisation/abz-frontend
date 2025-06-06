@@ -5,11 +5,12 @@ export const login = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await instance.post("/auth/login", { payload });
-
+      const response = await instance.post("/auth/login", payload); // Removed { payload }
       return response.data;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
     }
   }
 );
